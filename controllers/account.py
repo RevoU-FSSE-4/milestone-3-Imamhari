@@ -8,12 +8,13 @@ from models.account import Account
 
 account_routes = Blueprint('account_routes', __name__)
 
+Session = sessionmaker(connection)
+s = Session()
+
 #create account
 @account_routes.route('/accounts', methods=['POST'])
 def create_account():
-    Session = sessionmaker(connection)
-    s = Session()
-
+    
     s.begin()
 
     try:
@@ -37,8 +38,8 @@ def create_account():
 #update account
 @account_routes.route('/accounts/<id>', methods=['PUT'])
 def update_account(id):
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
 
     s.begin()
 
@@ -62,8 +63,8 @@ def update_account(id):
 #get account
 @account_routes.route('/accounts', methods=['GET'])
 def get_account():
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
 
     try:
         account_query = select(Account)
@@ -99,8 +100,8 @@ def get_account():
 #get account by id
 @account_routes.route('/accounts/<id>', methods=['GET'])
 def get_account_by_id(id):
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
 
     try:
         account_query = select(Account).where(Account.id == id)
@@ -132,8 +133,8 @@ def get_account_by_id(id):
 #delete account
 @account_routes.route('/accounts/<id>', methods=['DELETE'])
 def delete_account(id):
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
 
     s.begin()
 

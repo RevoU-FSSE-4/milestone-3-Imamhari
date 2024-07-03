@@ -7,12 +7,13 @@ from models.transaction import Transaction
 
 transaction_routes = Blueprint('transaction_routes', __name__)
 
+Session = sessionmaker(connection)
+s = Session()
 
 #create transaction
 @transaction_routes.route('/transactions', methods=['POST'])
 def create_transaction():
-    Session = sessionmaker(connection)
-    s = Session()
+    
 
     s.begin()
 
@@ -39,8 +40,8 @@ def create_transaction():
 #view transaction
 @transaction_routes.route('/transactions', methods=['GET'])
 def get_transaction():
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
 
     try:
         transaction_query = select(Transaction)
@@ -74,8 +75,8 @@ def get_transaction():
 #view transaction by id
 @transaction_routes.route('/transactions/<id>', methods=['GET'])
 def get_transaction_by_id(id):
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
 
     try:
         transaction_query = select(Transaction).where(Transaction.id == id)

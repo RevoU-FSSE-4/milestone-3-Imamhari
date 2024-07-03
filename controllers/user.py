@@ -8,13 +8,14 @@ from flask_login import login_user, logout_user, login_required
 
 user_routes = Blueprint('user_routes', __name__)
 
+Session = sessionmaker(connection)
+s = Session()
+
 #register
 @user_routes.route('/register', methods=['POST'])
 def register():
-    Session = sessionmaker(connection)
-    session = Session()
-
-    session.begin()
+    
+    s.begin()
 
     try:
         NewUser = User(
@@ -24,12 +25,12 @@ def register():
 
         NewUser.set_password(request.form['password_hash'])
 
-        session.add(NewUser)
-        session.commit()
+        s.add(NewUser)
+        s.commit()
 
     except Exception as e:
-        print(e)
-        session.rollback()
+        # print(e)
+        s.rollback()
         return {"message": "Failed to Register"}, 501
     
     return {"message": "Successfully Registered"}, 202
@@ -37,14 +38,13 @@ def register():
 #login
 @user_routes.route('/login', methods=['POST'])
 def login():
-    Session = sessionmaker(connection)
-    session = Session()
-
-    session.begin()
+    # Session = sessionmaker(connection)
+    # session = Session()
+    s.begin()
 
     try: 
         email = request.form['email']
-        username = session.query(User).filter(User.email == email).first()
+        username = s.query(User).filter(User.email == email).first()
 
         if username is None:
             return {"message": "User does not exist"}, 401
@@ -64,23 +64,23 @@ def login():
 
     except Exception as e:
         print(e)
-        session.rollback()
+        s.rollback()
         return {"message": "Failed to Login"}, 501
 
     return {"message": "Successfully Logged In"}, 202
     
 
 # get users
-@user_routes.route('/users', methods=['GET'])
+@user_routes.route('/users/me', methods=['GET'])
 @login_required
 def get_user():
-    Session = sessionmaker(connection)
-    session = Session()
+    # Session = sessionmaker(connection)
+    # session = Session()
 
     try:
         user_query = select(User)
 
-        result = session.execute(user_query)
+        result = s.execute(user_query)
         users = []
 
         for row in result.scalars():
@@ -91,10 +91,11 @@ def get_user():
                 "created_at": row.created_at,
                 "updated_at": row.updated_at
             })
-            return {
-                "users": users,
-                "message": "Successfully Retrieved Users"
-                }, 202
+        return {
+                
+            "message": "Successfully Retrieved Users",
+            "users": users
+        }, 202
         
     except Exception as e:
         print(e)
@@ -107,8 +108,8 @@ def get_user():
 @user_routes.route('/users/<id>', methods=['PUT'])
 @login_required
 def update_user(id):
-    Session = sessionmaker(connection)
-    s = Session()
+    # Session = sessionmaker(connection)
+    # s = Session()
     s.begin()
 
     try:
@@ -119,7 +120,7 @@ def update_user(id):
         s.commit()
 
     except Exception as e:
-        print(e)
+        # print(e)
         s.rollback()
         return {"message": "Failed to Update User"}, 501
 
