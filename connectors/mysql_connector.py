@@ -9,7 +9,7 @@ database = os.getenv("DB_DATABASE")
 # Connect to Database
 print("Connecting to Database")
 
-engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}")
+engine = create_engine(f"mysql+mysqlconnector://{username}:{password}@{host}/{database}", echo=True)
 
 connection = engine.connect()
 print("Successfully Connected")
