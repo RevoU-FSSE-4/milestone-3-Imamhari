@@ -1,14 +1,11 @@
 from flask import Blueprint, request
-from connectors.mysql_connector import connection
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
 from models.transaction import Transaction
+from controllers.user import s
 
 
 transaction_routes = Blueprint('transaction_routes', __name__)
 
-Session = sessionmaker(connection)
-s = Session()
 
 #create transaction
 @transaction_routes.route('/transactions', methods=['POST'])

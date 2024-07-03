@@ -1,15 +1,10 @@
 from flask import Blueprint, request
-from connectors.mysql_connector import connection
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
-
 from models.account import Account
-
+from controllers.user import s
 
 account_routes = Blueprint('account_routes', __name__)
 
-Session = sessionmaker(connection)
-s = Session()
 
 #create account
 @account_routes.route('/accounts', methods=['POST'])

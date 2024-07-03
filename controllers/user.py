@@ -2,9 +2,10 @@ from flask import Blueprint, request
 from connectors.mysql_connector import connection
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select
+from datetime import datetime
 
 from models.user import User
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 
 user_routes = Blueprint('user_routes', __name__)
 
@@ -105,17 +106,23 @@ def get_user():
 
 
 #update user
-@user_routes.route('/users/<id>', methods=['PUT'])
+@user_routes.route('/users/me', methods=['PUT'])
 @login_required
-def update_user(id):
+def update_user():
     # Session = sessionmaker(connection)
     # s = Session()
-    s.begin()
+
+    # s.begin()
 
     try:
-        user = s.query(User).filter(User.id == id).first()
-        user.username = request.form['username']
-        user.email = request.form['email']
+        user = s.query(User).filter(User.id == current_user.id ).first()
+
+        if "username" in request.form:
+            user.username = request.form['username']
+        if "email" in request.form:
+            user.email = request.form['email']
+
+        user.updated_at = datetime.now()
 
         s.commit()
 
