@@ -1,7 +1,9 @@
 from flask import Blueprint, request
 from sqlalchemy import select
 from models.transaction import Transaction
+from models.account import Account
 from controllers.user import s
+from flask_login import login_required
 
 
 transaction_routes = Blueprint('transaction_routes', __name__)
@@ -9,10 +11,9 @@ transaction_routes = Blueprint('transaction_routes', __name__)
 
 #create transaction
 @transaction_routes.route('/transactions', methods=['POST'])
+@login_required
 def create_transaction():
     
-
-    s.begin()
 
     try:
         NewTransaction = Transaction(  
@@ -22,6 +23,28 @@ def create_transaction():
             type = request.form['type'],
             description = request.form['description'],
         )
+
+
+        if request.form['type'] == 'transfer':
+            account_to = s.query(Account).filter(Account.id == request.form['to_account_id']).first()
+            account_from = s.query(Account).filter(Account.id == request.form['from_account_id']).first()
+            # print('account', account)
+            account_from.balance = int(account_from.balance) - int(NewTransaction.amount)
+            account_to.balance = int(account_to.balance) + int(NewTransaction.amount)
+            s.add(account_to)
+            s.add(account_from)
+
+        elif request.form['type'] == 'withdraw':
+            account = s.query(Account).filter(Account.id == request.form['to_account_id']).first()
+            print('account', account)
+            account.balance = int(account.balance) - int(NewTransaction.amount)
+            s.add(account)
+
+        elif request.form['type'] == 'deposit':
+            account = s.query(Account).filter(Account.id == request.form['to_account_id']).first()
+            print('account', account)
+            account.balance = int(account.balance) + int(NewTransaction.amount)
+            s.add(account)
 
         s.add(NewTransaction)
         s.commit()
@@ -36,6 +59,7 @@ def create_transaction():
 
 #view transaction
 @transaction_routes.route('/transactions', methods=['GET'])
+@login_required
 def get_transaction():
     # Session = sessionmaker(connection)
     # s = Session()
@@ -71,6 +95,7 @@ def get_transaction():
 
 #view transaction by id
 @transaction_routes.route('/transactions/<id>', methods=['GET'])
+@login_required
 def get_transaction_by_id(id):
     # Session = sessionmaker(connection)
     # s = Session()

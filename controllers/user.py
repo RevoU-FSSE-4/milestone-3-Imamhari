@@ -16,7 +16,7 @@ s = Session()
 @user_routes.route('/register', methods=['POST'])
 def register():
     
-    s.begin()
+    # s.begin()
 
     try:
         NewUser = User(
@@ -41,7 +41,7 @@ def register():
 def login():
     # Session = sessionmaker(connection)
     # session = Session()
-    s.begin()
+    # s.begin()
 
     try: 
         email = request.form['email']
@@ -139,5 +139,6 @@ def update_user():
 @login_required
 def logout():
     logout_user()
+    
     return {"message": "Successfully Logged Out"}, 202
 

@@ -2,12 +2,13 @@ from flask import Blueprint, request
 from sqlalchemy import select
 from models.account import Account
 from controllers.user import s
-
+from flask_login import login_required
 account_routes = Blueprint('account_routes', __name__)
 
 
 #create account
 @account_routes.route('/accounts', methods=['POST'])
+@login_required
 def create_account():
     
     s.begin()
@@ -32,6 +33,7 @@ def create_account():
 
 #update account
 @account_routes.route('/accounts/<id>', methods=['PUT'])
+@login_required
 def update_account(id):
     # Session = sessionmaker(connection)
     # s = Session()
@@ -57,6 +59,7 @@ def update_account(id):
 
 #get account
 @account_routes.route('/accounts', methods=['GET'])
+@login_required
 def get_account():
     # Session = sessionmaker(connection)
     # s = Session()
@@ -94,6 +97,7 @@ def get_account():
 
 #get account by id
 @account_routes.route('/accounts/<id>', methods=['GET'])
+@login_required
 def get_account_by_id(id):
     # Session = sessionmaker(connection)
     # s = Session()
@@ -127,6 +131,7 @@ def get_account_by_id(id):
 
 #delete account
 @account_routes.route('/accounts/<id>', methods=['DELETE'])
+@login_required
 def delete_account(id):
     # Session = sessionmaker(connection)
     # s = Session()

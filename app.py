@@ -1,8 +1,5 @@
 from flask import Flask
 from dotenv import load_dotenv
-from connectors.mysql_connector import connection
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import text
 
 from flask_login import LoginManager
 
