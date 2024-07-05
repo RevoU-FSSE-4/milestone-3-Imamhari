@@ -14,7 +14,6 @@ transaction_routes = Blueprint('transaction_routes', __name__)
 @login_required
 def create_transaction():
     
-
     try:
         NewTransaction = Transaction(  
             from_account_id = request.form['from_account_id'],
